@@ -1,10 +1,13 @@
 import Fastify from "fastify";
-import { routes } from "./routes/firstRoute";
-import { initHooks } from "./hooks";
+import { initRegisters } from "./registers";
+import { initRoutes } from "./routes";
+
 const server = Fastify();
 
-initHooks(server);
-server.register(routes);
+initRegisters(server);
+initRoutes(server);
+
+server.get("/", (req, rep) => ({ message: "Hello from fastify" }));
 
 const start = async () => {
   try {
