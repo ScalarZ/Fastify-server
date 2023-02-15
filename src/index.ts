@@ -11,8 +11,8 @@ server.get("/", (req, rep) => ({ message: "Hello from fastify" }));
 
 const start = async () => {
   try {
-    await server.listen({ port: 3000 });
-
+    const PORT = (process.env.PORT || 3000) as number;
+    await server.listen({ port: PORT || 3000 });
     const address = server.server.address();
     const port = typeof address === "string" ? address : address?.port;
     console.log("Listening on port: " + port);
