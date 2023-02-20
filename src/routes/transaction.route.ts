@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { isHour, isDay, isMonth } from "../../types";
+import { isHour, isDay, isMonth } from "../types";
 
 export async function transactionRoutes(fastify: FastifyInstance) {
   const { supabase } = fastify;

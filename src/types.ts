@@ -1,7 +1,7 @@
 import "fastify";
 import { FastifyRedis } from "@fastify/redis";
 import { FastifySupabase } from "fastify-supabase";
-import { Hour, Day, Month } from "./type";
+import { Hour, Day, Month } from "./types.d";
 
 declare module "fastify" {
   interface FastifyInstance {
