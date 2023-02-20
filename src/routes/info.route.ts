@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 
 export async function infoRoutes(fastify: FastifyInstance) {
   fastify.get("/api/info", async (req, res) => {
-    // console.time("res");
+    console.time("res");
 
     // const cashKey = "info";
     // const { redis } = fastify;
