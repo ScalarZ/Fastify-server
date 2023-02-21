@@ -12,3 +12,7 @@ export type Day = {
 export type Month = {
   year: string;
 };
+
+export type Range = {
+  range: string;
+};
