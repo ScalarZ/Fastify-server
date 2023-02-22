@@ -53,7 +53,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
           Number(range.split("-")[1])
         );
         const { data, error } = await supabase
-          .from("snoc2")
+          .from("snoc")
           .select(
             "transaction_id, description, date_derniere_modification, type_transaction, code_pdv"
           )
@@ -73,7 +73,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     } = req as { params: { id: number } };
     try {
       const { data, error } = await supabase
-        .from("snoc2")
+        .from("snoc")
         .select("*")
         .eq("transaction_id", id);
       if (error) throw error;

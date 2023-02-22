@@ -7,7 +7,11 @@ const server = Fastify();
 initRegisters(server);
 initRoutes(server);
 
-server.get("/", (req, rep) => ({ message: "Hello from fastify" }));
+const sessions: { id: string; user: string }[] = [];
+
+server.get("/", (req, rep) => {
+  return { message: "hello fastify" };
+});
 
 const start = async () => {
   try {
