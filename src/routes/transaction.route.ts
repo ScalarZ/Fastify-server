@@ -57,6 +57,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
           .select(
             "transaction_id, description, date_derniere_modification, type_transaction, code_pdv"
           )
+          .order("date_derniere_modification", { ascending: false })
           .range(min, max);
         if (error) throw error;
         return data;
@@ -78,6 +79,60 @@ export async function transactionRoutes(fastify: FastifyInstance) {
         .eq("transaction_id", id);
       if (error) throw error;
       return data;
+    } catch (err) {
+      return err;
+    }
+  });
+
+  fastify.get("/api/transaction/searching/:id", async (req, res) => {
+    const {
+      params: { id },
+    } = req as { params: { id: number } };
+    try {
+      const { data, error } = await supabase
+        .from("snoc")
+        .select("transaction_id")
+        .order("date_derniere_modification", { ascending: false })
+        .like("transaction_id", `%${id}%`)
+        .limit(10);
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      return err;
+    }
+  });
+
+  fastify.get("/api/transaction/search/:id", async (req, res) => {
+    const {
+      params: { id },
+    } = req as { params: { id: number } };
+    const { query } = req;
+    try {
+      if (isRange(query)) {
+        let { range } = query;
+        if (!/\d+-\d+/.test(range))
+          return { error: "invalid range", form: "?range=number-number" };
+
+        const min = Math.min(
+          Number(range.split("-")[0]),
+          Number(range.split("-")[1])
+        );
+        const max = Math.max(
+          Number(range.split("-")[0]),
+          Number(range.split("-")[1])
+        );
+        const { data, error } = await supabase
+          .from("snoc")
+          .select(
+            "transaction_id, description, date_derniere_modification, type_transaction, code_pdv"
+          )
+          .order("date_derniere_modification", { ascending: false })
+          .like("transaction_id", `%${id}%`)
+          .range(min, max);
+        if (error) throw error;
+        return data;
+      }
+      return [];
     } catch (err) {
       return err;
     }

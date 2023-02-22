@@ -102,4 +102,52 @@ export async function posRoutes(fastify: FastifyInstance) {
       return err;
     }
   });
+
+  fastify.get("/api/pos/searching/:id", async (req, res) => {
+    const {
+      params: { id },
+    } = req as { params: { id: number } };
+    try {
+      const { data, error } = await supabase.rpc("searching_pos", {
+        pos_code: `%${id}%`,
+      });
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      return err;
+    }
+  });
+
+  fastify.get("/api/pos/search/:id", async (req, res) => {
+    const {
+      params: { id },
+    } = req as { params: { id: number } };
+    const { query } = req;
+    try {
+      if (isRange(query)) {
+        let { range } = query;
+        if (!/\d+-\d+/.test(range))
+          return { error: "invalid range", form: "?range=number-number" };
+
+        const min = Math.min(
+          Number(range.split("-")[0]),
+          Number(range.split("-")[1])
+        );
+        const max = Math.max(
+          Number(range.split("-")[0]),
+          Number(range.split("-")[1])
+        );
+        const { data, error } = await supabase.rpc("search_pos", {
+          l: max - min,
+          start: min,
+          pos_code: `%${id}%`,
+        });
+        if (error) throw error;
+        return data;
+      }
+      return [];
+    } catch (err) {
+      return err;
+    }
+  });
 }
