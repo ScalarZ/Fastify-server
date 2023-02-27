@@ -84,16 +84,23 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get("/api/transaction/searching/:id", async (req, res) => {
+  fastify.post("/api/transaction/searching/:id", async (req, res) => {
     const {
       params: { id },
     } = req as { params: { id: number } };
+    const {
+      body: { type },
+    } = req as {
+      body: {
+        type: "TRA_ID" | "POS_ID";
+      };
+    };
     try {
       const { data, error } = await supabase
         .from("snoc")
         .select("transaction_id")
         .order("date_derniere_modification", { ascending: false })
-        .like("transaction_id", `%${id}%`)
+        .like(type === "TRA_ID" ? "transaction_id" : "code_pdv", `%${id}%`)
         .limit(10);
       if (error) throw error;
       return data;

@@ -4,16 +4,17 @@ export async function authRoute(fastify: FastifyInstance) {
   fastify.get("/api/login", async (req, rep) => {
     try {
       const access_token = await rep.jwtSign({ name: "foo" });
-      rep
-        .setCookie("access_token", access_token, {
-          path: "/",
-          httpOnly: true,
-          secure: true,
-          signed: true,
-          sameSite: true,
-        })
-        .code(200)
-        .send({ statusCode: 200, message: "logged in" });
+      rep.setCookie("access_token", access_token, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: true,
+      });
+      return {
+        statusCode: 200,
+        message: "logged in",
+        cookie: `access_token=${access_token}; Path=/; HttpOnly; Secure; SameSite=Strict`,
+      };
     } catch (err) {
       return err;
     }
