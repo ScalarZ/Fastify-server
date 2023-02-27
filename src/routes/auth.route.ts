@@ -12,7 +12,7 @@ export async function authRoute(fastify: FastifyInstance) {
       return {
         statusCode: 200,
         message: "logged in",
-        cookie: `access_token=${access_token}; Path=/; HttpOnly; Secure; SameSite=Strict`,
+        cookie: `access_token=${access_token}; Path=/; Secure; SameSite=Strict`,
       };
     } catch (err) {
       return err;
