@@ -1,13 +1,13 @@
 import Fastify from "fastify";
 import { initRegisters } from "./registers";
 import { initRoutes } from "./routes";
+import { initHooks } from "./hooks";
 
 const server = Fastify();
 
 initRegisters(server);
+initHooks(server);
 initRoutes(server);
-
-const sessions: { id: string; user: string }[] = [];
 
 server.get("/", (req, rep) => {
   return { message: "hello fastify" };

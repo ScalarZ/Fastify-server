@@ -102,17 +102,23 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get("/api/transaction/search/:id", async (req, res) => {
+  fastify.post("/api/transaction/search/:id", async (req, res) => {
     const {
       params: { id },
     } = req as { params: { id: number } };
     const { query } = req;
+    const {
+      body: { type },
+    } = req as {
+      body: {
+        type: "TRA_ID" | "POS_ID";
+      };
+    };
     try {
       if (isRange(query)) {
         let { range } = query;
         if (!/\d+-\d+/.test(range))
           return { error: "invalid range", form: "?range=number-number" };
-
         const min = Math.min(
           Number(range.split("-")[0]),
           Number(range.split("-")[1])
@@ -127,7 +133,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
             "transaction_id, description, date_derniere_modification, type_transaction, code_pdv"
           )
           .order("date_derniere_modification", { ascending: false })
-          .like("transaction_id", `%${id}%`)
+          .like(type === "TRA_ID" ? "transaction_id" : "code_pdv", `%${id}%`)
           .range(min, max);
         if (error) throw error;
         return data;

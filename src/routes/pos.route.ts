@@ -42,13 +42,11 @@ export async function posRoutes(fastify: FastifyInstance) {
         /^\/api\/pos\/\d+\?day=\d{1,2}&month=\d{1,2}&year=\d{4}$/.test(url) ||
         /^\/api\/pos\/\d+\?month=\d{1,2}&year=\d{4}$/.test(url) ||
         /^\/api\/pos\/\d+\?year=\d{4}$/.test(url) ||
-        /^\/api\/pos\/\d+$/.test(url)
+        /^\/api\/pos\/\d+\?range=\d+-\d+$/.test(url)
       )
     ) {
       return {
-        error: "invalid url format",
-        format:
-          "<pos_code>?day=<1 or 2 numbers>&month=<1 or 2 numbers>&year=<4 numbers>",
+        error: "404 not found",
       };
     }
     try {
@@ -89,15 +87,29 @@ export async function posRoutes(fastify: FastifyInstance) {
         };
       }
 
-      const { data, error } = await supabase
-        .from("pos")
-        .select(
-          "*, snoc(transaction_id, description, date_derniere_modification, type_transaction)"
-        )
-        .eq("code_pdv", id);
+      if (isRange(query)) {
+        let { range } = query;
 
-      if (error) throw error;
-      return data;
+        const min = Math.min(
+          Number(range.split("-")[0]),
+          Number(range.split("-")[1])
+        );
+        const max = Math.max(
+          Number(range.split("-")[0]),
+          Number(range.split("-")[1])
+        );
+        const { data, error } = await supabase
+          .from("pos")
+          .select(
+            "*, snoc(transaction_id, description, date_derniere_modification, type_transaction)"
+          )
+          .eq("code_pdv", id)
+          .range(min, max, { foreignTable: "snoc" });
+
+        if (error) throw error;
+        return data;
+      }
+      return [];
     } catch (err) {
       return err;
     }
