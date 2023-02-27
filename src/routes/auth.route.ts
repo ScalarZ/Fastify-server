@@ -6,7 +6,6 @@ export async function authRoute(fastify: FastifyInstance) {
       const access_token = await rep.jwtSign({ name: "foo" });
       rep.setCookie("access_token", access_token, {
         path: "/",
-        httpOnly: true,
         secure: true,
         sameSite: true,
       });
