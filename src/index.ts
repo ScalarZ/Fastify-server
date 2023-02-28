@@ -19,7 +19,7 @@ const start = async () => {
     await server.listen({ port: PORT || 3000 });
     const address = server.server.address();
     const port = typeof address === "string" ? address : address?.port;
-    console.log("Listening on port: " + port);
+    console.log("http://localhost:" + port);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

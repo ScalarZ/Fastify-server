@@ -115,13 +115,14 @@ export async function posRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get("/api/pos/searching/:id", async (req, res) => {
+  fastify.get("/api/pos/searching/:type/:id", async (req, res) => {
     const {
-      params: { id },
-    } = req as { params: { id: number } };
+      params: { id, type },
+    } = req as { params: { id: number; type: string } };
     try {
       const { data, error } = await supabase.rpc("searching_pos", {
-        pos_code: `%${id}%`,
+        param_id: `%${id}%`,
+        type,
       });
       if (error) throw error;
       return data;
@@ -130,10 +131,10 @@ export async function posRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get("/api/pos/search/:id", async (req, res) => {
+  fastify.get("/api/pos/search/:type/:id", async (req, res) => {
     const {
-      params: { id },
-    } = req as { params: { id: number } };
+      params: { id, type },
+    } = req as { params: { id: number; type: string } };
     const { query } = req;
     try {
       if (isRange(query)) {
@@ -143,6 +144,7 @@ export async function posRoutes(fastify: FastifyInstance) {
 
         const min = Math.min(
           Number(range.split("-")[0]),
+
           Number(range.split("-")[1])
         );
         const max = Math.max(
@@ -152,7 +154,8 @@ export async function posRoutes(fastify: FastifyInstance) {
         const { data, error } = await supabase.rpc("search_pos", {
           l: max - min,
           start: min,
-          pos_code: `%${id}%`,
+          param_id: `%${id}%`,
+          type,
         });
         if (error) throw error;
         return data;

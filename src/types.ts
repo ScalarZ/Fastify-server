@@ -5,11 +5,6 @@ import { Hour, Day, Month, Range } from "./types.d";
 declare module "fastify" {
   interface FastifyInstance {
     supabase: FastifySupabase;
-    req: {
-      pramas: {
-        id: number;
-      };
-    };
   }
 }
 
