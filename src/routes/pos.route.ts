@@ -118,7 +118,7 @@ export async function posRoutes(fastify: FastifyInstance) {
   fastify.get("/api/pos/searching/:type/:id", async (req, res) => {
     const {
       params: { id, type },
-    } = req as { params: { id: number; type: string } };
+    } = req as { params: { id: number; type: "pos_name" | "pos_id" } };
     try {
       const { data, error } = await supabase.rpc("searching_pos", {
         param_id: `%${id}%`,
@@ -134,7 +134,7 @@ export async function posRoutes(fastify: FastifyInstance) {
   fastify.get("/api/pos/search/:type/:id", async (req, res) => {
     const {
       params: { id, type },
-    } = req as { params: { id: number; type: string } };
+    } = req as { params: { id: number; type: "pos_name" | "pos_id" } };
     const { query } = req;
     try {
       if (isRange(query)) {
