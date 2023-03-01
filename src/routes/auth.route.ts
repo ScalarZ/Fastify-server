@@ -9,7 +9,7 @@ export async function authRoute(fastify: FastifyInstance) {
       username: string;
       password: string;
     };
-    if (username === "admin" && password === "admin")
+    if (username === "admin" && password === "admin") {
       try {
         const access_token = await rep.jwtSign({ username, type: "admin" });
         rep.setCookie("access_token", access_token, {
@@ -27,7 +27,7 @@ export async function authRoute(fastify: FastifyInstance) {
           .status(401)
           .send({ statusCode: 503, message: "internal server error" });
       }
-    else {
+    } else {
       rep.status(401).send({ statusCode: 401, message: "invalid credentials" });
     }
   });
