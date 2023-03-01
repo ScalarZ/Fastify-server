@@ -92,7 +92,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     try {
       const { data, error } = await supabase
         .from("snoc")
-        .select("transaction_id")
+        .select(type === "tra_id" ? "transaction_id" : "code_pdv")
         .order("date_derniere_modification", { ascending: false })
         .like(type === "tra_id" ? "transaction_id" : "code_pdv", `%${id}%`)
         .limit(10);
